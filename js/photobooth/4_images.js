@@ -64,6 +64,16 @@ let selectedSticker = null;
 // Thêm biến cho việc xoay sticker
 let stickerRotation = 0;
 
+// Thêm biến cho touch events
+let touchStartX = 0;
+let touchStartY = 0;
+let lastTouchX = 0;
+let lastTouchY = 0;
+let isPinching = false;
+let initialPinchDistance = 0;
+let initialStickerSize = 0;
+let initialStickerRotation = 0;
+
 // Hàm load stickers
 function loadStickers() {
   const stickerOptions = document.getElementById("stickerOptions");
@@ -105,6 +115,11 @@ templatePreviewCanvas.addEventListener('mousedown', handleMouseDown);
 templatePreviewCanvas.addEventListener('mousemove', handleMouseMove);
 templatePreviewCanvas.addEventListener('mouseup', handleMouseUp);
 templatePreviewCanvas.addEventListener('wheel', handleWheel);
+
+// Thêm event listeners cho touch events
+templatePreviewCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+templatePreviewCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+templatePreviewCanvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 
 function handleMouseDown(e) {
   const rect = templatePreviewCanvas.getBoundingClientRect();
@@ -1405,3 +1420,213 @@ deleteAllBtn.addEventListener('click', () => {
   previewImagesContainer.innerHTML = '';
   updateTemplatePreview();
 });
+
+// Thêm hàm attachPreviewClick
+function attachPreviewClick(wrapper) {
+  wrapper.addEventListener("click", function() {
+    wrapper.classList.toggle("selected");
+    updateTemplatePreview();
+  });
+}
+
+function handleTouchStart(e) {
+  e.preventDefault();
+  const rect = templatePreviewCanvas.getBoundingClientRect();
+  const scale = templatePreviewCanvas.width / rect.width;
+  
+  if (e.touches.length === 1) {
+    // Single touch - move sticker
+    const touch = e.touches[0];
+    touchStartX = (touch.clientX - rect.left) * scale;
+    touchStartY = (touch.clientY - rect.top) * scale;
+    lastTouchX = touchStartX;
+    lastTouchY = touchStartY;
+
+    // Check if touch is on a sticker
+    for (let i = stickers.length - 1; i >= 0; i--) {
+      const sticker = stickers[i];
+      if (touchStartX >= sticker.x && touchStartX <= sticker.x + sticker.width &&
+          touchStartY >= sticker.y && touchStartY <= sticker.y + sticker.height) {
+        isDragging = true;
+        currentSticker = sticker;
+        selectedSticker = sticker;
+        dragOffset = {
+          x: touchStartX - sticker.x,
+          y: touchStartY - sticker.y
+        };
+        break;
+      }
+    }
+  } else if (e.touches.length === 2 && currentSticker) {
+    // Two finger touch - scale and rotate
+    isPinching = true;
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[1];
+    
+    // Calculate initial pinch distance
+    initialPinchDistance = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch1.clientY
+    );
+    
+    // Store initial sticker size and rotation
+    initialStickerSize = currentSticker.width;
+    initialStickerRotation = currentSticker.rotation;
+  }
+  
+  updateTemplatePreview();
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  if (!isDragging && !isPinching) return;
+
+  const rect = templatePreviewCanvas.getBoundingClientRect();
+  const scale = templatePreviewCanvas.width / rect.width;
+
+  if (isDragging && currentSticker) {
+    const touch = e.touches[0];
+    const x = (touch.clientX - rect.left) * scale;
+    const y = (touch.clientY - rect.top) * scale;
+    
+    currentSticker.x = x - dragOffset.x;
+    currentSticker.y = y - dragOffset.y;
+    
+    lastTouchX = x;
+    lastTouchY = y;
+  } else if (isPinching && currentSticker && e.touches.length === 2) {
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[1];
+    
+    // Calculate current pinch distance
+    const currentDistance = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch1.clientY
+    );
+    
+    // Calculate scale factor
+    const scaleFactor = currentDistance / initialPinchDistance;
+    
+    // Update sticker size
+    const newWidth = Math.max(20, Math.min(300, initialStickerSize * scaleFactor));
+    const newHeight = Math.max(20, Math.min(300, initialStickerSize * scaleFactor));
+    currentSticker.width = newWidth;
+    currentSticker.height = newHeight;
+    
+    // Calculate rotation
+    const angle = Math.atan2(
+      touch2.clientY - touch1.clientY,
+      touch2.clientX - touch1.clientX
+    ) * 180 / Math.PI;
+    currentSticker.rotation = initialStickerRotation + angle;
+  }
+  
+  updateTemplatePreview();
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  isDragging = false;
+  isPinching = false;
+  currentSticker = null;
+  updateTemplatePreview();
+}
+
+// Thêm hàm tạo nút điều khiển cho mobile
+function createMobileControls() {
+  const controls = document.createElement('div');
+  controls.id = 'mobileControls';
+  controls.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 20px;
+  `;
+
+  // Nút xoay
+  const rotateBtn = document.createElement('button');
+  rotateBtn.innerHTML = '🔄';
+  rotateBtn.style.cssText = `
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    font-size: 20px;
+    cursor: pointer;
+  `;
+  rotateBtn.onclick = () => {
+    if (selectedSticker) {
+      selectedSticker.rotation = (selectedSticker.rotation + 45) % 360;
+      updateTemplatePreview();
+    }
+  };
+
+  // Nút phóng to
+  const zoomInBtn = document.createElement('button');
+  zoomInBtn.innerHTML = '➕';
+  zoomInBtn.style.cssText = rotateBtn.style.cssText;
+  zoomInBtn.onclick = () => {
+    if (selectedSticker) {
+      const newWidth = Math.min(300, selectedSticker.width * 1.2);
+      const newHeight = Math.min(300, selectedSticker.height * 1.2);
+      selectedSticker.width = newWidth;
+      selectedSticker.height = newHeight;
+      updateTemplatePreview();
+    }
+  };
+
+  // Nút thu nhỏ
+  const zoomOutBtn = document.createElement('button');
+  zoomOutBtn.innerHTML = '➖';
+  zoomOutBtn.style.cssText = rotateBtn.style.cssText;
+  zoomOutBtn.onclick = () => {
+    if (selectedSticker) {
+      const newWidth = Math.max(20, selectedSticker.width * 0.8);
+      const newHeight = Math.max(20, selectedSticker.height * 0.8);
+      selectedSticker.width = newWidth;
+      selectedSticker.height = newHeight;
+      updateTemplatePreview();
+    }
+  };
+
+  // Nút xóa
+  const deleteBtn = document.createElement('button');
+  deleteBtn.innerHTML = '❌';
+  deleteBtn.style.cssText = rotateBtn.style.cssText;
+  deleteBtn.onclick = () => {
+    if (selectedSticker) {
+      const index = stickers.indexOf(selectedSticker);
+      if (index > -1) {
+        stickers.splice(index, 1);
+        selectedSticker = null;
+        updateTemplatePreview();
+      }
+    }
+  };
+
+  controls.appendChild(rotateBtn);
+  controls.appendChild(zoomInBtn);
+  controls.appendChild(zoomOutBtn);
+  controls.appendChild(deleteBtn);
+
+  // Chỉ hiển thị controls khi có sticker được chọn
+  controls.style.display = 'none';
+  document.body.appendChild(controls);
+
+  // Cập nhật hiển thị controls khi chọn sticker
+  const originalUpdateTemplatePreview = updateTemplatePreview;
+  updateTemplatePreview = function() {
+    originalUpdateTemplatePreview();
+    controls.style.display = selectedSticker ? 'flex' : 'none';
+  };
+}
+
+// Gọi hàm tạo controls khi trang load
+window.addEventListener('load', createMobileControls);
