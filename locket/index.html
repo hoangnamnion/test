@@ -1,0 +1,282 @@
+
+<!doctype html>
+<head>
+  <link rel="icon" href="/favicon.ico" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>Add me on Locket 💛</title>
+  <meta property="og:title" content="Add me on Locket 💛" />
+  <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/locket-public-assets/o/invites%2Fen.png?alt=media" />
+  <meta property="og:description" content="Add your friends to your Home Screen." />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B3TW13S2Y9"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-B3TW13S2Y9');
+  </script>
+
+  <style>
+  @font-face {
+    font-family: 'ProximaSoft';
+    src: url('/fonts/proxima_soft_bold.otf');
+  }
+
+  body {
+    height: 100vh;
+    margin: 0;
+    font-family: ui-rounded, "ProximaSoft", sans-serif;
+    background: linear-gradient(black, #2B1F00);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .flex-centered {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex-vertical {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .gold-shadow {
+    box-shadow: 0 0 60px rgba(255, 199, 0, 0.5);
+  }
+  .button {
+    background-color: #FFB800;
+    padding: 18px 36px;
+    color: rgba(0, 0, 0, 0.8);
+    text-decoration: none;
+    border-radius: 500px;
+    font-weight: 700;
+    font-size: 18px;
+    font-family: ui-rounded, "ProximaSoft", sans-serif;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    border: none;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+  }
+  .button-disabled {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .button-icon {
+    margin-left: 6px;
+  }
+
+  .profile-pic-container {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+  }
+  .profile-pic-outer {
+    width: 100%;
+    height: 100%;
+    border-radius: 500px;
+    border: 4px solid #FFB800;
+    display: flex;
+  }
+  .profile-pic-inner {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 500px;
+    margin: 4px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .profile-pic-initials {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+    font-size: 40px;
+    padding: 0;
+    margin: 0;
+    max-width: 220px
+  }
+  .profile-pic-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 500px;
+    animation: fadeIn ease 800ms;
+  }
+  @keyframes fadeIn {
+    0% { opacity:0; }
+    100% { opacity:1; }
+  }
+
+  .app-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  .title {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    color: rgba(255, 255, 255, 0.64);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    max-width: 240px;
+    text-align: center;
+    margin-bottom: 34px;
+    line-height: 24px;
+  }
+
+  .username-subtitle-celebrity {
+    color: rgba(255, 255, 255, 0.40);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 24px; /* 133.333% */
+    margin: 0;
+    margin-top: -2px;
+    margin-bottom: 40px;
+  }
+  .subtitle-celebrity {
+    color: rgba(255, 255, 255, 0.64);
+    font-weight: 600;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    margin-bottom: 48px;
+    line-height: normal;
+  }
+  .subtitle-celebrity-highlight {
+    color: rgba(255, 255, 255, 1.0);
+  }
+  .celebrity-container {
+    position: relative;
+    width: 265px;
+    height: 336px;
+  }
+  .celebrity-background {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+    width: 265px;
+    height: 336px;
+  }
+  #celebrity-image-container {
+    position: absolute;
+    top: 20px;
+    left: -20px;
+    width: 148px;
+    height: 148px;
+    transform: rotate(-10deg);
+    border-radius: 28px;
+    border: 6px solid #FFB900;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .celebrity-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 1s ease-in-out;
+  }
+  .celebrity-second-subtitle {
+    position: absolute;
+    top: 256px;
+    left: 0;
+    width: 235px;
+    height: 52px;
+    padding: 0 15px;
+    margin: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.60);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 26px;
+    word-wrap: break-word;
+    z-index: 3;
+  }
+  </style>
+</head>
+<body>
+    
+      <div class="flex-centered gold-shadow">
+      <div class="flex-vertical">
+        <div class="profile-pic-container">
+          
+<div class="profile-pic-outer">
+  <div class="profile-pic-inner">
+    <img class="profile-pic-img" src=https://firebasestorage.googleapis.com:443/v0/b/locket-img/o/users%2FZP7a2DYwnCUDrcudyH3csWGBHg62%2Fpublic%2Fprofile_pic.webp?alt=media&token=61e3d039-a29f-41e7-86ef-4a354479d356 />
+  </div>
+</div>
+
+        </div>
+        <h2 class="title">Add me on Locket</h2>
+        <h3 class="subtitle">Pics from your best friends on your Home Screen</h2>
+        <button class="button" onclick="openDynamicLink()">
+          Ấn Để Gửi Kết Bạn
+          <img class ="button-icon" src="locket/images/.jpg" />
+        </button>
+      </div>
+    </div>
+  
+    
+<script>
+async function copyTextToClipboard(text) {
+  await navigator.clipboard.write([
+    new ClipboardItem({
+      'text/plain': new Blob(["https://locket.page.link/?link=https%3A%2F%2Flocket.camera%2Finvites%2FZP7a2DYwnCUDrcudyH3csWGBHg627904778ca8394dc5%3Ftype%3DUsernameLink&isi=1600525061&ibi=com.locket.Locket&efr=1&apn=com.locket.Locket"], {
+        type: 'text/plain',
+      }),
+    }),
+    new ClipboardItem({
+      'text/html': new Blob(["<hello></hello>"], {
+        type: 'text/html',
+      }),
+    })
+  ]);
+}
+
+function isIOSDevice() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+
+async function openDynamicLink() {
+  if (isIOSDevice()) {
+    copyTextToClipboard("https://locket.page.link/?link=https%3A%2F%2Flocket.camera%2Finvites%2FZP7a2DYwnCUDrcudyH3csWGBHg627904778ca8394dc5%3Ftype%3DUsernameLink&isi=1600525061&ibi=com.locket.Locket&efr=1&apn=com.locket.Locket");
+  }
+  window.location.href = "https://locket.page.link/?link=https%3A%2F%2Flocket.camera%2Finvites%2FZP7a2DYwnCUDrcudyH3csWGBHg627904778ca8394dc5%3Ftype%3DUsernameLink&isi=1600525061&ibi=com.locket.Locket&efr=1&apn=com.locket.Locket";
+}
+</script>
+
+</body>
+</html>
